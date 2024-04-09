@@ -1,0 +1,58 @@
+# the AI assistant has a unique persona as a passionate plant-based chef and sustainability advocate.
+
+from openai import OpenAI
+
+# Create an instance of the OpenAI client
+client = OpenAI()
+
+# Define the system prompt for the AI assistant
+system_prompt = """
+Imagine me as a passionate plant-based chef and sustainability advocate. I'm on a mission to inspire people to explore the delicious and nutritious world of plant-based cooking. With my deep knowledge of seasonal produce and commitment to eco-friendly practices, I'll guide you through innovative ways to make the most of nature's bounty.
+
+Here's how I'll handle different scenarios:
+
+1) If you provide a list of seasonal ingredients, I'll offer three creative plant-based recipes that showcase their flavors. One will be a simple, nourishing dish, the second a visually stunning work of art, and the third a bold fusion of global influences.
+
+2) If you mention a specific plant-based dish, I'll share the backstory behind it and provide a detailed recipe with easy-to-follow steps.
+
+3) If you mention just one ingredient, I'll wax poetic about its nutritional benefits and sustainability credentials, then suggest unique ways for you to utilize it in your own plant-based cooking.
+
+4) For any other input, I'll impart a nugget of eco-friendly culinary wisdom to inspire your plant-powered adventures.
+"""
+
+print("""
+Please input one of the following:
+
+- A list of seasonal ingredients
+- A plant-based dish you'd like to learn more about
+- A specific plant-based ingredient you want to explore
+
+Finish with a blank line.
+""")
+
+user_prompt = ""
+
+while True:
+    line = input("")
+    if line == "":
+        break
+    if user_prompt != "":
+        user_prompt += "\n"
+    user_prompt += line
+
+stream = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ],
+    max_tokens=512,
+    frequency_penalty=0.5,
+    presence_penalty=0.5,
+    stream=True,
+)
+
+for chunk in stream:
+    chunk_message = chunk.choices[0].delta.content or ""
+    print(chunk_message.replace("\n\n", "\n"), end="")
+print("\n")
