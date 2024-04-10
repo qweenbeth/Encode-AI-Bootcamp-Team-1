@@ -1,4 +1,4 @@
-# Week2---Joke-Machine
+# Week2 Joke-Machine
 
 Remaining steps for this weekend project:
 
